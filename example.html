@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bevalid example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="src/jquery.bevalid.js"></script>
+    <style>
+        .form-group {
+            margin: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        $(function() {
+            var exampleOne = function() {
+
+                $(this).bevalid();
+
+                if( $(this).bevalid('isValid') ) {
+                    // valid
+                }
+
+                return false;
+            }
+
+            $('.form-one').on('submit', exampleOne);
+        });
+    </script>
+</head>
+<body>
+    <div class="form-wrap">
+        <form action="#" class="form-one">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" data-bevalid data-bevalid-rules-required/>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" name="phone" data-bevalid data-bevalid-rules-required data-bevalid-rules-phone />
+            </div>
+            <div class="form-group">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
