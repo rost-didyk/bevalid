@@ -3,7 +3,7 @@
 <head>
     <title>Bevalid example</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="src/jquery.bevalid.js"></script>
+    <script src="../src/jquery.bevalid.js"></script>
     <style>
         .form-group {
             margin: 10px;
@@ -18,7 +18,9 @@
         $(function() {
             var exampleOne = function() {
 
-                $(this).bevalid();
+                $(this).bevalid({
+                    'appendErrorMessageAfter':'label'
+                });
 
                 if( $(this).bevalid('isValid') ) {
                     // valid

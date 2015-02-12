@@ -29,7 +29,10 @@
      *
      * @type {{}}
      */
-    defaults = {};
+    defaults = {
+        // Selector after append error message
+        'appendErrorMessageAfter':'label'
+    };
 
     /**
      * Validate rules
@@ -249,7 +252,7 @@
                 $element.addClass(errorClass);
                 $element.data('elementIdentifier', elementIdentifier);
                 $errorTemplate = $('<div/>').addClass(errorClass + '-wrap ' + elementIdentifier);
-                $insertElement = $element.closest('label').length ? $element.closest('label') : $element;
+                $insertElement = $element.closest(this.settings['appendErrorMessageAfter']).length ? $element.closest(this.settings['appendErrorMessageAfter']) : $element;
                 $errorTemplate.insertAfter($insertElement);
             } else {
                 elementIdentifier = $element.data('elementIdentifier');
