@@ -31,7 +31,9 @@
      */
     defaults = {
         // Selector after append error message
-        'appendErrorMessageAfter':'label'
+        'appendErrorMessageAfter':'label',
+        // Element error class
+        'elementErrorClass':'bevalid-error'
     };
 
     /**
@@ -245,7 +247,7 @@
             var errorClass, elementIdentifier,
                 $errorTemplate, $errorList, $insertElement;
 
-            errorClass = 'bevalid-error';
+            errorClass = this.settings['elementErrorClass'];
             // Add error token and Identifier
             if(!$element.hasClass(errorClass)) {
                 elementIdentifier = errorClass + '-' + getRandom(1,30000);
@@ -277,7 +279,7 @@
         removeValidError: function($element) {
             var  errorClass, elementIdentifier;
 
-            errorClass = 'bevalid-error';
+            errorClass = this.settings['elementErrorClass'];
             $element.removeClass(errorClass);
             elementIdentifier = $element.data('elementIdentifier');
             $('.' + elementIdentifier).remove();

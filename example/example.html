@@ -19,7 +19,8 @@
             var exampleOne = function() {
 
                 $(this).bevalid({
-                    'appendErrorMessageAfter':'label'
+                    'appendErrorMessageAfter':'label',
+                    'elementErrorClass': 'has-error'
                 });
 
                 if( $(this).bevalid('isValid') ) {
