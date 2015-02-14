@@ -2,15 +2,43 @@
 <html>
 <head>
     <title>Bevalid example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="../src/jquery.bevalid.js"></script>
     <style>
-        .form-group {
-            margin: 10px;
+        .example-row {
+            position: relative;
+            margin: 31px;
+            padding: 60px 30px;
+            border: 1px solid #959595;
         }
 
-        label {
-            display: block;
+        .example-row:after {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #959595;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            content: "Example";
+        }
+
+        .has-error {
+            border: 1px solid #F21212;
+            background: #FDEBEB;
+        }
+
+        .has-error-wrap ul{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            color: #F21212;
+        }
+
+        .header {
+            font-size: 16px;
             font-weight: bold;
         }
     </style>
@@ -35,20 +63,47 @@
     </script>
 </head>
 <body>
-    <div class="form-wrap">
-        <form action="#" class="form-one">
-            <div class="form-group">
-                <label>Name</label>
-                <input type="text" name="name" data-bevalid data-bevalid-rules-required/>
-            </div>
-            <div class="form-group">
-                <label>Phone</label>
-                <input type="text" name="phone" data-bevalid data-bevalid-rules-required data-bevalid-rules-phone />
-            </div>
-            <div class="form-group">
-                <button type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
+<div class="example-row">
+   <div class="row">
+       <div class="col-md-4">
+           <form class="form-one">
+
+               <div class="form-group">
+                   <label for="exampleRequired">Require field</label>
+                   <input type="text" class="form-control" data-bevalid data-bevalid-rules-required id="exampleRequired" placeholder="Enter someone">
+               </div>
+
+               <div class="form-group">
+                   <label for="exampleEmail">Email address</label>
+                   <input type="text" class="form-control" data-bevalid data-bevalid-rules-email id="exampleEmail" placeholder="Enter email">
+               </div>
+               <div class="form-group">
+                   <label for="exampleUrl">Url</label>
+                   <input type="text" class="form-control" data-bevalid data-bevalid-rules-url id="exampleUrl" placeholder="Enter url">
+               </div>
+               <div class="checkbox">
+                   <label>
+                       <input type="checkbox" data-bevalid data-bevalid-rules-required> Check me out
+                   </label>
+               </div>
+               <button type="submit" class="btn btn-default">Submit</button>
+           </form>
+       </div>
+       <div class="col-md-8">
+           <span class="header">
+                Validation is easy.
+                Add special data attr to form elements.
+           </span>
+           <pre>
+               <code>
+                Required field - data-bevalid data-bevalid-rules-required
+                   Email field - data-bevalid data-bevalid-rules-email
+                     Url field - data-bevalid data-bevalid-rules-url
+                  Other fields - other data attributes. Pls see documentation
+               </code>
+           </pre>
+       </div>
+   </div>
+</div>
 </body>
 </html>
