@@ -1,9 +1,6 @@
 /**
  * jQuery Validate Form Plugin
  * http://github.com/rost-didyk/bevalid
- *
- * Copyright 2015, Didyk Rostislav
- *
  * MIT licensed
  * http://www.opensource.org/licenses/MIT
  */
@@ -48,7 +45,7 @@
             if(!isCustom && $.inArray($element.attr('type'), ['checkbox', 'radio']) != -1) {
                 value = $element.prop('checked');
             } else {
-                value = isCustom ? $element.data('bevalid-custom-value').length : $element.val().length;
+                value = isCustom ? $element.data('bevalid-custom-value').length : $.trim($element.val()).length;
             }
 
             return !!value;
@@ -72,6 +69,11 @@
         bevalidRulesNumber: function($element) {
             var pattern = /^\d+$/;
             return matchValue($element, pattern);
+        },
+
+        bevalidRulesHostName: function($element) {
+            var pattern = /^[0-9a-zA-Z][0-9\.\-a-zA-Z]+[0-9a-zA-Z]$/;
+            return matchValue($element, pattern);
         }
     };
 
@@ -84,8 +86,9 @@
         bevalidRulesRequired: 'This field is required',
         bevalidRulesEmail:    'This field must be email',
         bevalidRulesPhone:    'Please type correct phone number',
-        bevalidRulesUrl:      'Please type correct url address',
-        bevalidRulesNumber:   'This field must be only number'
+        bevalidRulesUrl:      'Please type correct url address(http://...)',
+        bevalidRulesNumber:   'This field must be only number',
+        bevalidRulesHostName:   'Invalid host name'
     };
 
     /**
@@ -107,11 +110,15 @@
     };
 
     /**
-     * Match value by patter
+     * Match value by pattern
      */
     matchValue = function($element, pattern) {
         var isCustom = $element.hasClass('bevalid-custom-value'),
             value = isCustom ? $element.data('bevalid-custom-value') : $element.val();
+
+        if(value.length == 0) {
+            return true;
+        }
 
         return pattern.test(value);
     };
@@ -156,10 +163,13 @@
          * Parse all element who have attr data-bevalid.
          * And add observe to element
          */
-        parse: function() {
-            var $elements, allDataAttr, validToken = [];
+        parse: function($elements) {
+            var allDataAttr, validToken = [];
 
-            $elements = this.$wrap.find('[data-bevalid]');
+            if (typeof $elements == 'undefined') {
+                $elements = this.$wrap.find('[data-bevalid]');
+            }
+
             $.each($elements, $.proxy(function(index,element) {
                 var validSettings = [];
                 allDataAttr = $(element).data();
@@ -175,6 +185,7 @@
                 var $element = $(element);
 
                 validToken.push(this.isElementValid($element, validSettings));
+
             }, this));
 
             return validToken;
@@ -306,7 +317,7 @@
          * @returns {*}
          */
         setPatterns: function(value) {
-            $.extend({},this.patterns, value);
+            this.patterns = $.extend({},this.patterns, value);
         },
 
         /**
@@ -315,7 +326,50 @@
          * @param value
          */
         setErrorText: function(value) {
-            $.extend({},this.errorMessages, value);
+            this.errorMessages = $.extend({},this.errorMessages, value);
+        },
+
+        /**
+         * When server response error message
+         * highlight form
+         * data is {email:{'error':'error text'}}
+         */
+        setResponseError: function(data) {
+            var  self = this, getKeysFn;
+
+            // Return keys in object
+            getKeysFn = function(obj) {
+                var result = [];
+                $.each(obj, function(k,v){
+                    result.push(k);
+                });
+                return result;
+            }
+
+            // Set errors message
+            $.each(data, function(i,message){
+                self.setErrorText(message);
+            });
+
+            // Create error on element
+            $.each(data, function(element, message) {
+                var $element = self.$wrap.find('[name="' + element +'"]');
+                self.addValidError($element, getKeysFn(message));
+            });
+        },
+
+        /**
+         * Destroy plugin
+         */
+        destroyPlugin: function() {
+            console.log("Bevalid destroy..." );
+        },
+
+        /**
+         * Validate manual fields
+         */
+        isElValid: function(data) {
+            return $.inArray(false, this.parse(data)) == -1;
         },
 
         /**
@@ -330,8 +384,11 @@
 
             switch (action) {
                 case 'isValid': result = this.isValid(); break;
+                case 'isElValid': result = this.isElValid(value); break;
                 case 'setPatterns': result = this.setPatterns(value); break;
                 case 'setErrorText': result = this.setErrorText(value); break;
+                case 'setResponseError': result = this.setResponseError(value); break;
+                case 'destroy': result = this.destroyPlugin(); break;
                 default:
                     console.warn('Method ' + action + ' not found');
                     break;
