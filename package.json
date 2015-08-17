@@ -1,0 +1,22 @@
+{
+  "name": "bevalid",
+  "version": "0.0.1",
+  "description": "Form Validation Plugin",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rost-didyk/bevalid.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rost-didyk/bevalid/issues"
+  },
+  "homepage": "https://github.com/rost-didyk/bevalid#readme"
+}
