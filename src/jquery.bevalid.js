@@ -57,7 +57,7 @@
         },
 
         bevalidRulesPhone: function($element) {
-            var pattern = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+            var pattern = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
             return matchValue($element, pattern);
         },
 
@@ -74,6 +74,16 @@
         bevalidRulesHostName: function($element) {
             var pattern = /^[0-9a-zA-Z][0-9\.\-a-zA-Z]+[0-9a-zA-Z]$/;
             return matchValue($element, pattern);
+        },
+
+        bevalidRulesLargeThen: function($element, value) {
+            var $form = $element.parents('form'), $el = $form.find('[name="' + value + '"]'), valid = true;
+
+            if ($element.val() > $el.val()) {
+                valid = false;
+            }
+
+            return valid;
         }
     };
 
@@ -88,7 +98,8 @@
         bevalidRulesPhone:    'Please type correct phone number',
         bevalidRulesUrl:      'Please type correct url address(http://...)',
         bevalidRulesNumber:   'This field must be only number',
-        bevalidRulesHostName:   'Invalid host name'
+        bevalidRulesHostName:  'Invalid host name',
+        bevalidRulesLargeThen: 'Large error'
     };
 
     /**
