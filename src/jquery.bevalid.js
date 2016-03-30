@@ -30,7 +30,10 @@
         // Selector after append error message
         'appendErrorMessageAfter':'label',
         // Element error class
-        'elementErrorClass':'bevalid-error'
+        'elementErrorClass':'bevalid-error',
+        'translateFn': function(string) {
+            return string
+        }
     };
 
     /**
@@ -56,8 +59,23 @@
             return matchValue($element, pattern);
         },
 
+        /**
+         * +388(063)377 2695
+         +380633772695
+         (063)3772695
+         380633772695
+         700-720-1000
+         123456789012
+         3456789054
+         720 2222222
+         054-6501530
+         054 6501530
+
+         * @param $element
+         * @returns {*}
+         */
         bevalidRulesPhone: function($element) {
-            var pattern = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
+            var pattern = /^[\+?]{0,1}[0-9]{0,3}(\([0-9]{3}\)|[0-9]{3})[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
             return matchValue($element, pattern);
         },
 
@@ -96,7 +114,7 @@
         bevalidRulesRequired: 'This field is required',
         bevalidRulesEmail:    'This field must be email',
         bevalidRulesPhone:    'Please type correct phone number',
-        bevalidRulesUrl:      'Please type correct url address(http://...)',
+        bevalidRulesUrl:      'Please type correct url address',
         bevalidRulesNumber:   'This field must be only number',
         bevalidRulesHostName:  'Invalid host name',
         bevalidRulesLargeThen: 'Large error'
@@ -145,6 +163,11 @@
         return Math.floor(Math.random() * (max - min) + min);
     };
 
+    var eventsRulesPattern = {
+        'only-lat': /[^a-zA-Z\s\-\_\.]/g,
+        'only-digital': /[^0-9\s]/g
+    };
+
     /**
      * Plugin constructor
      *
@@ -168,6 +191,40 @@
             this.errorMessages         = errorMessages;
             this.errorCallbackRegister =  callbackErrorRegister;
             this.validCallbackRegister =  callbackValidRegister;
+            this.initElementsEvent();
+        },
+
+        /**
+         * Init spy events on element
+         */
+        initElementsEvent: function() {
+            var $elements =  this.$wrap.find('[data-bevalid]');
+
+            function parseEvent($el, callback) {
+                var dataAttributes = $el.data();
+                $.each(dataAttributes, function(data){
+                    if (data.indexOf('bevalidEvents') > -1) {
+                        var explode = data.match(/[A-Z][a-z]+/g);
+                        if (explode[1]) {
+                            callback($el,explode[1], dataAttributes[data]);
+                        }
+                    }
+                });
+            }
+
+            function activateEventListener($el, event, rules) {
+                $el.on(event.toLowerCase(), function(){
+                    var $el = $(this), pattern = eventsRulesPattern[rules];
+                    if ( $el.val().match(pattern)) {
+                        $el.val($el.val().replace(pattern, ''));
+                    }
+                });
+            }
+
+            $.each($elements, function(){
+                parseEvent($(this), activateEventListener);
+            });
+
         },
 
         /**
@@ -286,7 +343,7 @@
             $errorList = $('<ul/>');
             for(var i = 0; i < errorRules.length; i++) {
                 var message;
-                message = this.errorMessages[errorRules[i]];
+                message = this.settings.translateFn(this.errorMessages[errorRules[i]]);
                 $('<li/>').html(message).appendTo($errorList);
             }
             $errorTemplate.html('');
